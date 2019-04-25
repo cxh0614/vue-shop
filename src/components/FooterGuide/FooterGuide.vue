@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer_guide border-1px">
+  <footer class="footer_guide border-1px" v-show="$route.meta.isShowFooter">
     <span class="guide_item" :class="{on: $route.path === '/msite'}" @click="goTo('/msite')">   <!-- 对象模式： 类名是确定的，但不确定有没有 -->
       <span class="item_icon">
         <i class="iconfont icon-waimai"></i>
