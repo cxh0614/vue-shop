@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <title>vue-shop</title>
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_518606_5kcf4pgw3tc.css">
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <!-- 解决移动端点击事件0.3秒延迟问题：使用fastclick库 -->
+    <script src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
+    <script>
+      if ('addEventListener' in document) {
+        document.addEventListener('DOMContentLoaded', function() {
+          FastClick.attach(document.body);
+        }, false);
+      }
+      if(!window.Promise) {
+        document.writeln('<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"'+'>'+'<'+'/'+'script>');
+      }
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        -ms-touch-action: pan-y;
+        touch-action: pan-y;
+        } 
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
