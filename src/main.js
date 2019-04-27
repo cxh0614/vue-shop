@@ -3,9 +3,11 @@ import App from './App.vue'
 import router from './router'
 import Header from './components/Header/Header.vue'
 import store from './store'
+import Star from './components/Star/Star.vue'
 
 //注册全局组件
 Vue.component('Header', Header)
+Vue.component('Star', Star)
 
 /* eslint-disable no-new */
 new Vue({
