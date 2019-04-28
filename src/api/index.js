@@ -23,3 +23,6 @@ export const reqXxx = () => ajax('/xxx')
 
 //需要通过代理转发请求baidu的接口
 export const reqBaidu = () => ajax('/baidu/yyy')
+
+//发送短信验证码
+export const reqCode = (phone) => ajax(BASE + '/sendcode', {phone})

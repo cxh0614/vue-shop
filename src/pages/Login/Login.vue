@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { reqCode } from '../../api'
 export default {
   data () {
     return {
@@ -79,15 +80,25 @@ export default {
   },
 
   methods: {
-    sendCode () {
+    async sendCode () {
       // alert('---')
       this.computeTime = 30
       const intervalId = setInterval(() => {
-        this.computeTime--
         if (this.computeTime === 0) {
           clearInterval(intervalId)
+        } else {
+          this.computeTime--
         }
       }, 1000)
+
+      const result = await reqCode(this.phone)
+      if (result.code === 0) {
+        alert('发送短信验证码成功')
+      } else {
+        // clearInterval(this.intervalId)
+        this.computeTime = 0
+        alert('发送短信验证码失败')
+      }
     },
 
     login () {
