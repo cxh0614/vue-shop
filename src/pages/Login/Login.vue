@@ -13,7 +13,9 @@
           <div :class="{on: isShowSms}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
-              <button :disabled="!isShowPhone" class="get_verification" :class="{right_phone_number: isShowPhone}" @click.prevent="sendCode">获取验证码</button>
+              <button :disabled="!isShowPhone || computeTime > 0" class="get_verification" :class="{right_phone_number: isShowPhone}" @click.prevent="sendCode">
+                {{computeTime > 0 ? `已发送${computeTime}s` :'获取验证码'}}
+              </button>
             </section>
             <section class="login_verification">
               <input type="tel" maxlength="8" placeholder="验证码">
@@ -57,7 +59,8 @@ export default {
   data () {
     return {
       isShowSms: true, //短信登录方式； false：密码登录
-      phone: '' //手机号
+      phone: '', //手机号
+      computeTime: 0, //验证码倒计时
     }
   },
 
@@ -70,7 +73,14 @@ export default {
 
   methods: {
     sendCode () {
-      alert('---')
+      // alert('---')
+      this.computeTime = 30
+      const intervalId = setInterval(() => {
+        this.computeTime--
+        if (this.computeTime === 0) {
+          clearInterval(intervalId)
+        }
+      }, 1000)
     }
   }
 }
