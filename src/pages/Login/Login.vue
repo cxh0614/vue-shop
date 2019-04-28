@@ -18,7 +18,7 @@
               </button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码">
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -28,10 +28,10 @@
           <div :class="{on: !isShowSms}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                <input type="tel" maxlength="11" placeholder="用户名" v-model="name">
               </section>
               <section class="login_verification">
-                <input :type="isShowPwd ? 'text': 'password'" maxlength="8" placeholder="密码">
+                <input :type="isShowPwd ? 'text': 'password'" maxlength="8" placeholder="密码" v-model="pwd">
                 <div class="switch_button" :class="isShowPwd ? 'on' : 'off'" @click="isShowPwd = !isShowPwd">
                   <div class="switch_circle" :class="{right: isShowPwd}"></div>
                   <span class="switch_text">
@@ -40,12 +40,12 @@
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
                 <img class="get_verification" src="./images/captcha.svg" alt="captcha">
               </section>
             </section>
           </div>
-          <button class="login_submit">登录</button>
+          <button class="login_submit" @click.prevent="login">登录</button>
         </form>
         <a href="javascript:;" class="about_us">关于我们</a>
       </div>
@@ -62,6 +62,10 @@ export default {
     return {
       isShowSms: true, // 短信登录方式； false：密码登录
       phone: '', // 手机号
+      code: '', // 一次性验证码
+      name: '', // 用户名
+      pwd: '', // 密码
+      captcha: '', //一次性图片验证码
       computeTime: 0, // 验证码倒计时
       isShowPwd: false // 是否原样显示密码
     }
@@ -84,6 +88,25 @@ export default {
           clearInterval(intervalId)
         }
       }, 1000)
+    },
+
+    login () {
+      const { code, name, pwd, captcha, isShowSms, isShowPhone } = this
+      if (isShowSms) {
+        if (!isShowPhone) {
+          return alert('必须输入手机号')
+        } else if (!/^\d{6}$/.test(code)) {
+          return alert('验证码必须是6位数')
+        }
+      } else {
+        if (!name.trim()) {
+          return alert('用户名必须输入')
+        } else if (!pwd.trim()) {
+          return alert('密码必须输入')
+        } else if (!/^\d{4}$/.test(captcha)) {
+          return alert('验证码必须是4位数')
+        }
+      }
     }
   }
 }
