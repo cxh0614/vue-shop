@@ -41,7 +41,7 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <img ref="captcha" class="get_verification" src="./images/captcha.svg" alt="captcha" @click="updateCaptcha">
               </section>
             </section>
           </div>
@@ -60,7 +60,7 @@
 export default {
   data () {
     return {
-      isShowSms: true, // 短信登录方式； false：密码登录
+      isShowSms: false, // 短信登录方式； false：密码登录
       phone: '', // 手机号
       code: '', // 一次性验证码
       name: '', // 用户名
@@ -91,14 +91,15 @@ export default {
     },
 
     login () {
+      // 进行前台表单验证, 如果不通过, 提示令牌
       const { code, name, pwd, captcha, isShowSms, isShowPhone } = this
-      if (isShowSms) {
+      if (isShowSms) { // 如果是短信登陆
         if (!isShowPhone) {
           return alert('必须输入手机号')
         } else if (!/^\d{6}$/.test(code)) {
           return alert('验证码必须是6位数')
         }
-      } else {
+      } else { // 如果是密码登陆
         if (!name.trim()) {
           return alert('用户名必须输入')
         } else if (!pwd.trim()) {
@@ -107,6 +108,14 @@ export default {
           return alert('验证码必须是4位数')
         }
       }
+    },
+
+    /*
+    更新图片验证码
+      */
+    updateCaptcha () {
+      // 一旦给<img>指定新的src属性, 浏览器就会自动重新请求并更新显示(携带一个时间戳参数)
+      this.$refs.captcha.src = 'http://localhost:5000/captcha?time' + Date.now()
     }
   }
 }
