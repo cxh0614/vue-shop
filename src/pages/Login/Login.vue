@@ -12,8 +12,8 @@
         <form>
           <div :class="{on: isShowSms}">
             <section class="login_message">
-              <input type="tel" maxlength="11" placeholder="手机号">
-              <button disabled="disabled" class="get_verification">获取验证码</button>
+              <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
+              <button :disabled="!isShowPhone" class="get_verification" :class="{right_phone_number: isShowPhone}" @click.prevent="sendCode">获取验证码</button>
             </section>
             <section class="login_verification">
               <input type="tel" maxlength="8" placeholder="验证码">
@@ -56,7 +56,21 @@
 export default {
   data () {
     return {
-      isShowSms: true //短信登录方式； false：密码登录
+      isShowSms: true, //短信登录方式； false：密码登录
+      phone: '' //手机号
+    }
+  },
+
+  computed: {
+    //用正则来验证手机号
+    isShowPhone () {
+      return /^1\d{10}$/.test(this.phone)
+    }
+  },
+
+  methods: {
+    sendCode () {
+      alert('---')
     }
   }
 }
