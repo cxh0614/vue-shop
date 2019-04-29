@@ -57,7 +57,12 @@
 </template>
 
 <script>
-import { reqCode } from '../../api'
+import {
+  reqCode,
+  reqPwdLogin,
+  reqSmsLogin
+} from '../../api'
+
 export default {
   data () {
     return {
@@ -101,23 +106,40 @@ export default {
       }
     },
 
-    login () {
+    async login () {
       // 进行前台表单验证, 如果不通过, 提示令牌
-      const { code, name, pwd, captcha, isShowSms, isShowPhone } = this
+      const { phone, code, name, pwd, captcha, isShowSms, isShowPhone } = this
+      let result
+
       if (isShowSms) { // 如果是短信登陆
         if (!isShowPhone) {
           return alert('必须输入手机号')
         } else if (!/^\d{6}$/.test(code)) {
           return alert('验证码必须是6位数')
         }
+        // 全部通过，短信信息登录的请求
+        result = await reqSmsLogin({phone, code})
       } else { // 如果是密码登陆
         if (!name.trim()) {
           return alert('用户名必须输入')
         } else if (!pwd.trim()) {
           return alert('密码必须输入')
-        } else if (!/^\d{4}$/.test(captcha)) {
+        } else if (!/^.{4}$/.test(captcha)) {
           return alert('验证码必须是4位数')
         }
+        // 全部通过，密码信息登录的请求
+        result = await reqPwdLogin({name, pwd, captcha})
+      }
+
+      // 根据结果做相应处理
+      if (result.code === 0) { // 登录成功
+        const user = result.data
+        // 保存用户信息
+
+        // 跳转到个人中心
+        this.$router.replace('/profile')
+      } else { // 登录失败
+        alert(result.msg)
       }
     },
 
