@@ -6,7 +6,10 @@ import {
   RECEIVE_CATEGORYS,
   RECEIVE_SHOPS,
   RECEIVE_USER,
-  RESET_USER
+  RESET_USER,
+  RECEIVE_INFO,
+  RECEIVE_RATINGS,
+  RECEIVE_GOODS
 } from './mutation-type'
 
 export default {
@@ -24,5 +27,14 @@ export default {
   },
   [RESET_USER] (state) {
     state.user = {}
+  },
+  [RECEIVE_INFO] (state, {info}) { // 接受包含数据的对象
+    state.info = info
+  },
+  [RECEIVE_RATINGS] (state, {ratings}) {
+    state.ratings = ratings
+  },
+  [RECEIVE_GOODS] (state, {goods}) {
+    state.goods = goods
   }
 }

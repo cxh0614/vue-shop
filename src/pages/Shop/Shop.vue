@@ -21,7 +21,21 @@
 <script>
 import ShopHeader from '../../components/ShopHeader/ShopHeader'
 
+import { reqGoods, reqInfo, reqRatings } from '../../api'
+import { RECEIVE_GOODS, RECEIVE_INFO, RECEIVE_RATINGS } from '../../store/mutation-type.js'
+
 export default {
+  async mounted () {
+    const result = await Promise.all([reqGoods(), reqInfo(), reqRatings()])
+    const goods = result[0].data
+    const ratings = result[1].data
+    const info = result[2].data
+
+    this.$store.commit(RECEIVE_GOODS, {goods})
+    this.$store.commit(RECEIVE_INFO, {info})
+    this.$store.commit(RECEIVE_RATINGS, {ratings})
+  },
+
   components: {
     ShopHeader
   }

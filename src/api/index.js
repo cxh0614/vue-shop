@@ -38,3 +38,8 @@ export const reqUser = () => ajax(BASE + '/userinfo')
 
 //用户登出
 export const reqLogout = () => ajax(BASE + '/logout')
+
+// mock模拟接口
+export const reqGoods = () => ajax('/goods')
+export const reqRatings = () => ajax('/ratings')
+export const reqInfo = () => ajax('/info')
