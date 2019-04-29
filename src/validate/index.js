@@ -3,12 +3,12 @@
  */
 import Vue from 'vue'
 import VeeValidate from 'vee-validate'
-import zh_CN from 'vee-validate/dist/locale/zh_CN'
+import zhCN from 'vee-validate/dist/locale/zh_CN'
 
 Vue.use(VeeValidate)
 
 VeeValidate.Validator.localize('zh_CN', {
-  messages: zh_CN.messages,
+  messages: zhCN.messages,
   attributes: {
     phone: '手机号',
     code: '验证码',
