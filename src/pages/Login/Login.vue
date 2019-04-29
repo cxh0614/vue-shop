@@ -41,7 +41,7 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                <img ref="captcha" class="get_verification" src="./images/captcha.svg" alt="captcha" @click="updateCaptcha">
+                <img ref="captcha" class="get_verification" src="http://localhost:5000/captcha" alt="captcha" @click="updateCaptcha">
               </section>
             </section>
           </div>
@@ -62,7 +62,7 @@ import {
   reqPwdLogin,
   reqSmsLogin
 } from '../../api'
-
+import { RECEIVE_USER } from '../../store/mutation-type.js'
 export default {
   data () {
     return {
@@ -135,7 +135,7 @@ export default {
       if (result.code === 0) { // 登录成功
         const user = result.data
         // 保存用户信息
-
+        this.$store.commit(RECEIVE_USER, user)
         // 跳转到个人中心
         this.$router.replace('/profile')
       } else { // 登录失败
