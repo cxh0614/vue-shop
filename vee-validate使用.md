@@ -1,7 +1,7 @@
 # 1. 说明
     1). vee-validate是专门用来做表单验证的vue插件
     2). github地址: https://github.com/baianat/vee-validate
-# 2. 使用
+# 2. 使用 
 ## 1). 引入
     下载: yarn add vee-validate
     引入插件:

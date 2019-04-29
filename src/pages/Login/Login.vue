@@ -12,13 +12,15 @@
         <form>
           <div :class="{on: isShowSms}">
             <section class="login_message">
-              <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
+              <input type="tel" maxlength="11" placeholder="手机号" v-model="phone" name="phone" v-validate="'required|mobile'" >
               <button :disabled="!isShowPhone || computeTime > 0" class="get_verification" :class="{right_phone_number: isShowPhone}" @click.prevent="sendCode">
                 {{computeTime > 0 ? `已发送${computeTime}s` :'获取验证码'}}
               </button>
+              <span style="color: red"> {{errors.first('phone')}} </span>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="code" name="code" v-validate="{required: true, regex: /^.{6}$/}">
+              <span style="color: red"> {{errors.first('code')}} </span>
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -28,20 +30,23 @@
           <div :class="{on: !isShowSms}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="用户名" v-model="name">
+                <input type="tel" maxlength="11" placeholder="用户名" v-model="name" name="name" v-validate="'required'">
+                <span style="color: red"> {{errors.first('name')}} </span>
               </section>
               <section class="login_verification">
-                <input :type="isShowPwd ? 'text': 'password'" maxlength="8" placeholder="密码" v-model="pwd">
+                <input :type="isShowPwd ? 'text': 'password'" maxlength="8" placeholder="密码" v-model="pwd" name="pwd" v-validate="'required'">
                 <div class="switch_button" :class="isShowPwd ? 'on' : 'off'" @click="isShowPwd = !isShowPwd">
                   <div class="switch_circle" :class="{right: isShowPwd}"></div>
                   <span class="switch_text">
                     {{isShowPwd ? 'abc' : ''}}
                   </span>
                 </div>
+                <span style="color: red"> {{errors.first('pwd')}} </span>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha" name="captcha" v-validate="{required: true, regex: /^.{4}$/}">
                 <img ref="captcha" class="get_verification" src="http://localhost:5000/captcha" alt="captcha" @click="updateCaptcha">
+                <span style="color: red"> {{errors.first('captcha')}} </span>
               </section>
             </section>
           </div>
@@ -63,6 +68,7 @@ import {
   reqSmsLogin
 } from '../../api'
 import { RECEIVE_USER } from '../../store/mutation-type.js'
+
 export default {
   data () {
     return {
@@ -108,42 +114,38 @@ export default {
 
     async login () {
       // 进行前台表单验证, 如果不通过, 提示令牌
-      const { phone, code, name, pwd, captcha, isShowSms, isShowPhone } = this
+      const { phone, code, name, pwd, captcha, isShowSms } = this
       let result
 
-      if (isShowSms) { // 如果是短信登陆
-        if (!isShowPhone) {
-          return alert('必须输入手机号')
-        } else if (!/^\d{6}$/.test(code)) {
-          return alert('验证码必须是6位数')
+      const validateNames = isShowSms ? ['phone', 'code'] : ['name', 'pwd', 'captcha']
+      // 进行表单验证
+      const success = await this.$validator.validateAll(validateNames)
+      if (success) { // 验证成功
+        if (isShowSms) { // 如果是短信登陆
+          // 全部通过，短信信息登录的请求
+          result = await reqSmsLogin({phone, code})
+        } else { // 如果是密码登陆
+          // 全部通过，密码信息登录的请求
+          result = await reqPwdLogin({name, pwd, captcha})
+          // 如果失败，重新获取图片验证码
+          if (result !== 0) {
+            this.updateCaptcha()
+            this.captcha = ''
+          }
         }
-        // 全部通过，短信信息登录的请求
-        result = await reqSmsLogin({phone, code})
-      } else { // 如果是密码登陆
-        if (!name.trim()) {
-          return alert('用户名必须输入')
-        } else if (!pwd.trim()) {
-          return alert('密码必须输入')
-        } else if (!/^.{4}$/.test(captcha)) {
-          return alert('验证码必须是4位数')
+
+        // 根据结果做相应处理
+        if (result.code === 0) { // 登录成功
+          const user = result.data
+          // 保存用户信息
+          this.$store.commit(RECEIVE_USER, user)
+          // 跳转到个人中心
+          this.$router.replace('/profile')
+        } else { // 登录失败
+          alert(result.msg)
         }
-        // 全部通过，密码信息登录的请求
-        result = await reqPwdLogin({name, pwd, captcha})
-
-        // 如果失败，重新获取图片验证码
-        this.updateCaptcha()
-        this.captcha = ''
-      }
-
-      // 根据结果做相应处理
-      if (result.code === 0) { // 登录成功
-        const user = result.data
-        // 保存用户信息
-        this.$store.commit(RECEIVE_USER, user)
-        // 跳转到个人中心
-        this.$router.replace('/profile')
-      } else { // 登录失败
-        alert(result.msg)
+      } else { // 验证失败
+        alert('验证失败')
       }
     },
 

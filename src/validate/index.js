@@ -17,3 +17,10 @@ VeeValidate.Validator.localize('zh_CN', {
     captcha: '验证码'
   }
 })
+
+VeeValidate.Validator.extend('mobile', {
+  validate: value => {
+    return /^1\d{10}$/.test(value)
+  },
+  getMessage: field => field + '必须是11位手机号码'
+})
