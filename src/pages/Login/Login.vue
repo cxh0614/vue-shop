@@ -129,6 +129,10 @@ export default {
         }
         // 全部通过，密码信息登录的请求
         result = await reqPwdLogin({name, pwd, captcha})
+
+        // 如果失败，重新获取图片验证码
+        this.updateCaptcha()
+        this.captcha = ''
       }
 
       // 根据结果做相应处理
