@@ -64,7 +64,10 @@ export default {
   },
 
   computed: {
-    ...mapState(['address', 'categorys']),
+    ...mapState({
+      address: state => state.msite.address,
+      categorys: state => state.msite.categorys
+    }),
 
     /*
     根据categorys生成二维数组
