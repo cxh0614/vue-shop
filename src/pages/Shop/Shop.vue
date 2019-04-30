@@ -26,7 +26,7 @@ import { RECEIVE_GOODS, RECEIVE_INFO, RECEIVE_RATINGS } from '../../store/mutati
 
 export default {
   async mounted () {
-    const result = await Promise.all([reqGoods(), reqInfo(), reqRatings()])
+    const result = await Promise.all([reqGoods(), reqRatings(), reqInfo()])
     const goods = result[0].data
     const ratings = result[1].data
     const info = result[2].data
